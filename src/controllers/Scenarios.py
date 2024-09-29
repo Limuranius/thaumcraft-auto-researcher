@@ -1,24 +1,27 @@
 import logging
 import math
 import threading
-import time
-from math import pi, tan
-from math import sin
 from math import cos
+from math import pi
+from math import sin
 
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QColor
 
-from src.UI import UIPrimitives
+from UI.primitives import Circle, Image
+from src.UI.OverlayUI import OverlayUI, KeyboardKeys
+from src.UI.primitives.Line import Line
+from src.UI.primitives.Point import Point
+from src.UI.primitives.Rect import Rect
+from src.UI.primitives.Text import Text
+from src.UI.primitives.values import DEFAULT_FONT
+from src.controllers.Aspect import Aspect
+from src.controllers.ThaumInteractor import ThaumInteractor, createTI
 from src.logic.LinksGeneration import generateLinkMap
 from src.utils.LinkableValue import LinkableCoord, LinkableValue
-from src.UI.OverlayUI import OverlayUI, KeyboardKeys
-from src.controllers.ThaumInteractor import ThaumInteractor, createTI, Aspect
-from src.UI.UIPrimitives import Rect, Point, Line, Text, DEFAULT_FONT
 from src.utils.constants import MARGIN, THAUM_ASPECTS_INVENTORY_SLOTS_X, THAUM_ASPECTS_INVENTORY_SLOTS_Y, \
-    THAUM_HEXAGONS_SLOTS_COUNT, THAUM_ASPECT_RECIPES_CONFIG_PATH, THAUM_VERSION_CONFIG_PATH, \
-    THAUM_ADDONS_ASPECT_RECIPES_CONFIG_PATH
-from src.utils.utils import saveThaumControlsConfig, readJSONConfig, saveJSONConfig, eventsDelay, renderDelay, \
+    THAUM_HEXAGONS_SLOTS_COUNT, THAUM_ASPECT_RECIPES_CONFIG_PATH, THAUM_ADDONS_ASPECT_RECIPES_CONFIG_PATH
+from src.utils.utils import saveThaumControlsConfig, readJSONConfig, eventsDelay, renderDelay, \
     saveThaumVersionConfig, loadThaumVersionConfig
 
 pointTextAnchor = LinkableCoord(MARGIN, MARGIN)
@@ -379,7 +382,7 @@ def beReadyForStartSolving(UI: OverlayUI):
     UI.clearAll()
     UI.createExitButton()
 
-    UI.addObject(UIPrimitives.Text(
+    UI.addObject(Text(
         MARGIN, MARGIN,
         f"""Сейчас нейросеть будет определять аспекты, находящиеся на поле. 
 Необходимо подключение к интернету.
@@ -440,8 +443,8 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
     class Cell:
         x: int = None
         y: int = None
-        object: UIPrimitives.Circle = None
-        imageObject: UIPrimitives.Image = None
+        object: Circle = None
+        imageObject: Image = None
         aspect: Aspect = None
         isNone: bool = False
 
@@ -581,7 +584,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
             hexagonCenterX = TI.rectHexagonsCC.x + ix * TI.hexagonSlotSizeX
             hexagonCenterY = TI.rectHexagonsCC.y + iy * TI.hexagonSlotSizeY - (ix % 2) * TI.hexagonSlotSizeY / 2
             cell = Cell(ix, iy)
-            cellObject = UIPrimitives.Circle(
+            cellObject = Circle(
                 hexagonCenterX,
                 hexagonCenterY,
                 r=TI.hexagonSlotSizeY / 2,
@@ -592,7 +595,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
             )
             cell.object = cellObject
             imageSide = TI.hexagonSlotSizeY / math.sqrt(2)
-            cellAspectImageObject = UIPrimitives.Image(
+            cellAspectImageObject = Image(
                 hexagonCenterX,
                 hexagonCenterY - imageSide,
                 imageSide,
@@ -608,7 +611,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
 
     # draw cell dialogue
     textYCoord = MARGIN
-    textCellIsNone = UI.addObject(UIPrimitives.Text(
+    textCellIsNone = UI.addObject(Text(
         MARGIN, textYCoord,
         'Ячейка недоступна (N)',
         color=QColor('white'),
@@ -622,7 +625,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
     ))
     cellSettingsStateDialogueObjects.append(textCellIsNone)
     textYCoord += textCellIsNone.h + MARGIN
-    textCellIsFree = UI.addObject(UIPrimitives.Text(
+    textCellIsFree = UI.addObject(Text(
         MARGIN, textYCoord,
         'Ячейка свободна (F)',
         color=QColor('white'),
@@ -640,7 +643,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
     textXCoord = MARGIN
     for i in range(len(TI.allAspects)):
         aspect = TI.allAspects[i]
-        textAspect = UI.addObject(UIPrimitives.Text(
+        textAspect = UI.addObject(Text(
             textXCoord, textYCoord,
             aspect.name,
             color=QColor('white'),
@@ -653,7 +656,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
             onClickCallbackArgs=[aspect],
             hoverable=True,
         ))
-        aspectImage = UI.addObject(UIPrimitives.Image(
+        aspectImage = UI.addObject(Image(
             textXCoord + MARGIN * 2, textYCoord,
             MARGIN * 2, MARGIN * 2,
             None,
@@ -668,7 +671,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
     UI.setObjectsVisibility(cellSettingsStateDialogueObjects, False)
 
     # draw base dialogue
-    activeStateTextObject = UI.addObject(UIPrimitives.Text(
+    activeStateTextObject = UI.addObject(Text(
         pointTextAnchor.x, pointTextAnchor.y,
         f"""Нейросеть определила аспекты на поле.
 Чтобы перегенерировать полученную цепочку решения, нажми [R]
@@ -690,7 +693,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
 
     def startPuttingLinkMap():
         UI.setAllObjectsVisibility(False)
-        onProcessText = UI.addObject(UIPrimitives.Text(
+        onProcessText = UI.addObject(Text(
             MARGIN, MARGIN,
             f"""Подожди, решение выкладывается на поле... 
 Не двигай мышью и не нажимай никакие кнопки.
@@ -740,7 +743,7 @@ def runResearching(UI: OverlayUI, TI: ThaumInteractor):
         if isUnstoppableModeOn[0]:
             startPuttingLinkMap()
 
-    onPausedText = UI.addObject(UIPrimitives.Text(
+    onPausedText = UI.addObject(Text(
         MARGIN, MARGIN,
         f"""Программа проистановлена.
 

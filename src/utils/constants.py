@@ -1,53 +1,58 @@
 import logging
 import os
 import sys
+from os.path import join
 
-#------------------------
+# ------------------------
 # UI and visual part
 MARGIN = 20
 FPS = 60
 
-
-#------------------------
+# ------------------------
 # Files paths
-def to_resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-    return os.path.join(base_path, relative_path)
 
+BASE_DIR = join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
-THAUM_VERSION_CONFIG_PATH = to_resource_path('user_configs/thaumVersionConfig.json')
-THAUM_CONTROLS_CONFIG_PATH = to_resource_path('user_configs/thaumControlsConfig.json')
-THAUM_ASPECT_RECIPES_CONFIG_PATH = to_resource_path('aspects_configs/aspectsRecipes.json')
-THAUM_ADDONS_ASPECT_RECIPES_CONFIG_PATH = to_resource_path('aspects_configs/addonsAspectsRecipes.json')
-THAUM_ASPECTS_ORDER_CONFIG_PATH = to_resource_path('aspects_configs/aspectsOrder.json')
+SRC_DIR = join(BASE_DIR, "src")
+IMAGES_DIR = join(BASE_DIR, "images")
+ASPECTS_CONFIGS_DIR = join(BASE_DIR, "aspects_configs")
+USER_CONFIGS_DIR = join(SRC_DIR, "user_configs")
+
+THAUM_VERSION_CONFIG_PATH = join(USER_CONFIGS_DIR, 'thaumVersionConfig.json')
+THAUM_CONTROLS_CONFIG_PATH = join(USER_CONFIGS_DIR, 'thaumControlsConfig.json')
+THAUM_ASPECT_RECIPES_CONFIG_PATH = join(ASPECTS_CONFIGS_DIR, 'aspectsRecipes.json')
+THAUM_ADDONS_ASPECT_RECIPES_CONFIG_PATH = join(ASPECTS_CONFIGS_DIR, 'addonsAspectsRecipes.json')
+THAUM_ASPECTS_ORDER_CONFIG_PATH = join(ASPECTS_CONFIGS_DIR, 'aspectsOrder.json')
 
 
 def getAspectImagePath(aspectName, colored=True):
-    return to_resource_path(f"images/{'color' if colored else 'mono'}/{aspectName}.png")
-def getImagePathByNumber(number):
-    return to_resource_path(f"images/numbers/{number}.png")
-UNKNOWN_ASPECT_IMAGE_PATH = "images/unknownAspect.png"
+    return join(IMAGES_DIR, f"{'color' if colored else 'mono'}/{aspectName}.png")
 
-EMPTY_ASPECT_SLOT_IMAGE_PATH = to_resource_path('images/emptyAspectPlace.png')
-HEXAGON_MASK_IMAGE_PATH = to_resource_path('images/hexagons/hexagonMask.png')
-HEXAGON_BORDER_MASK_IMAGE_PATH = to_resource_path('images/hexagons/hexagonBorderMask.png')
-MASK_WITHOUT_NUMBER_IMAGE_PATH = to_resource_path('images/maskWithoutNumbers.png')
-MASK_ONLY_NUMBER_IMAGE_PATH = to_resource_path('images/maskOnlyNumbers.png')
-NONE_HEXAGON_SLOT_IMAGE_PATH = to_resource_path('images/hexagons/noneHexagon.png')
+
+def getImagePathByNumber(number):
+    return join(IMAGES_DIR, f"numbers/{number}.png")
+
+
+UNKNOWN_ASPECT_IMAGE_PATH = join(IMAGES_DIR, "unknownAspect.png")
+
+EMPTY_ASPECT_SLOT_IMAGE_PATH = join(IMAGES_DIR, 'emptyAspectPlace.png')
+HEXAGON_MASK_IMAGE_PATH = join(IMAGES_DIR, 'hexagons/hexagonMask.png')
+HEXAGON_BORDER_MASK_IMAGE_PATH = join(IMAGES_DIR, 'hexagons/hexagonBorderMask.png')
+MASK_WITHOUT_NUMBER_IMAGE_PATH = join(IMAGES_DIR, 'maskWithoutNumbers.png')
+MASK_ONLY_NUMBER_IMAGE_PATH = join(IMAGES_DIR, 'maskOnlyNumbers.png')
+NONE_HEXAGON_SLOT_IMAGE_PATH = join(IMAGES_DIR, 'hexagons/noneHexagon.png')
 FREE_HEXAGON_SLOT_IMAGES_PATHS = [
-    to_resource_path('images/hexagons/freeHexagons/1.png'),
-    to_resource_path('images/hexagons/freeHexagons/2.png'),
-    to_resource_path('images/hexagons/freeHexagons/3.png'),
-    to_resource_path('images/hexagons/freeHexagons/4.png'),
-    to_resource_path('images/hexagons/freeHexagons/5.png'),
-    to_resource_path('images/hexagons/freeHexagons/6.png'),
-    to_resource_path('images/hexagons/freeHexagons/7.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/1.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/2.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/3.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/4.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/5.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/6.png'),
+    join(IMAGES_DIR, 'hexagons/freeHexagons/7.png'),
 ]
 ASPECTS_IMAGES_SIZE = 32  # px
 
-
-#------------------------
+# ------------------------
 # In-game inventory
 # !!! Don't touch if you not sure !!!
 INVENTORY_SLOTS_X = 9
@@ -61,7 +66,7 @@ THAUM_HEXAGONS_SLOTS_COUNT = 9  # must be odd
 DELAY_BETWEEN_EVENTS = 0.15  # seconds
 DELAY_BETWEEN_RENDER = 0.5  # seconds
 
-#------------------------
+# ------------------------
 # Neurolink constants
 # MODEL_ONNX_PATH = to_resource_path("neuro_model_configs/weights.onnx")
 ROBOFLOW_API_KEY = "QOvx9sZXQBIxEMVv0p9g"
@@ -70,15 +75,14 @@ ROBOFLOW_MODEL_VERSION = 1
 ROBOFLOW_FREE_HEXAGON_PREDICTION_NAME = "free_hex"
 ROBOFLOW_SCRIPT_IMAGE_PREDICTION_NAME = "script"
 
-
-#------------------------
+# ------------------------
 # Other constants
 EMPTY_TOLERANCE_PERCENT = 0.02
-IMAGE_TMP_PATH = to_resource_path(".tmp/tmp.png")
-LOG_FILE_PATH = to_resource_path("logs/logs.log")
-MAX_LOG_FILE_SIZE_BYTES = 1024 * 1024 # 1 Mb
+IMAGE_TMP_PATH = join(BASE_DIR, ".tmp/tmp.png")
+LOG_FILE_PATH = join(BASE_DIR, "logs/logs.log")
+MAX_LOG_FILE_SIZE_BYTES = 1024 * 1024  # 1 Mb
 
-#------------------------
+# ------------------------
 LOG_LEVEL = logging.DEBUG
 # DEBUG = True
 DEBUG = False

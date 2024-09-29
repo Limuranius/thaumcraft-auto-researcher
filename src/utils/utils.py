@@ -25,6 +25,7 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+
 def createDirByFilePath(fullpath: str):
     splittedPath = re.split('[\/]', fullpath)
     if len(splittedPath) <= 1:
@@ -34,6 +35,7 @@ def createDirByFilePath(fullpath: str):
         logging.info(f"Directory {dirPath} not exists. Creating...")
         os.makedirs(dirPath)
         logging.info(f"Directory {dirPath} successfully created")
+
 
 def saveJSONConfig(fullpath: str, jsonToSave: dict):
     createDirByFilePath(fullpath)
@@ -132,17 +134,21 @@ def saveThaumVersionConfig(version: str, addons: list[str]):
         'version': version,
         'addons': addons
     })
-def loadThaumVersionConfig() -> tuple[str|None, list[str]|None]:
+
+
+def loadThaumVersionConfig() -> tuple[str | None, list[str] | None]:
     conf = readJSONConfig(THAUM_VERSION_CONFIG_PATH)
     if conf is None:
         return None, None
     return conf['version'], conf['addons']
 
+
 def loadRecipesForSelectedVersion() -> dict[str, list[str, str]] | None:
     selectedVersion, selectedAddons = loadThaumVersionConfig()
     allRecipes = readJSONConfig(THAUM_ASPECT_RECIPES_CONFIG_PATH)
     if None in (selectedVersion, selectedAddons, allRecipes):
-        logging.error(f'Cannot load recipes for selected version. One of selectedVersion, selectedAddons, allRecipes is None: ({selectedVersion}, {selectedAddons}, {allRecipes})')
+        logging.error(
+            f'Cannot load recipes for selected version. One of selectedVersion, selectedAddons, allRecipes is None: ({selectedVersion}, {selectedAddons}, {allRecipes})')
         return None
     versionRecipes = allRecipes.get(selectedVersion)
     allAddonsRecipes = readJSONConfig(THAUM_ADDONS_ASPECT_RECIPES_CONFIG_PATH)
@@ -160,3 +166,18 @@ def eventsDelay():
 def renderDelay():
     time.sleep(DELAY_BETWEEN_RENDER)
 
+
+def loadImage(
+        path: str,
+        backgroundImage: Image.Image = None,
+        resize: tuple[int, int] | None = None) -> Image.Image:
+    image = Image.open(path)
+    if resize:
+        image = image.resize(resize, Image.Resampling.LANCZOS)
+    image = image.convert("RGBA")
+    backgroundImage = backgroundImage or Image.new("RGBA", image.size, "BLACK")  # Create a white rgba background
+    newImage = backgroundImage.convert("RGBA")
+    newImage.paste(image, mask=image)  # Paste the image on the background. Go to the links given below for details.
+    result = newImage.convert('RGB')
+    logging.debug(f"Loaded image {path}")
+    return result
