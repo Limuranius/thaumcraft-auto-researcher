@@ -49,15 +49,6 @@ class _NeurolinkClass:
             prediction[4],
         ), postprocessed))
 
-        image = image.copy()
-
-        from PIL import ImageDraw
-        draw = ImageDraw.ImageDraw(image)
-        for x, y, x1, y1, conf, conf, label in postprocessed:
-            draw.rectangle([x, y, x1, y1])
-            draw.text([x, y], str(class_names[int(label)]))
-        image.show()
-
         return result
 
 
