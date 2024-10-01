@@ -1,17 +1,26 @@
 import cv2
 import numpy as np
 import onnxruntime
-from PIL import Image, ImageDraw
+from PIL import Image
 
-from utils.constants import MODEL_ONNX_PATH
+from src.utils.constants import MODEL_ONNX_PATH
 
 IMG_SIZE_W, IMG_SIZE_H = 640, 640
-class_names = ['aequalitas', 'aer', 'alienis', 'aqua', 'arbor', 'astrum', 'auram', 'bestia', 'caelum', 'cognitio', 'coralos', 'corpus', 'desidia', 'dreadia', 'electrum', 'exanimis', 'exubitor', 'fabrico', 'fames', 'free_hex', 'gelum', 'gloria', 'granum', 'gula', 'herba', 'humanus', 'ignis', 'infernus', 'instrumentum', 'invidia', 'ira', 'iter', 'limus', 'lucrum', 'lux', 'luxuria', 'machina', 'magneto', 'matrix', 'messis', 'metallum', 'meto', 'mortuus', 'motus', 'mru', 'nebrisum', 'ordo', 'pannus', 'perditio', 'perfodio', 'permutatio', 'potentia', 'praecantatio', 'primordium', 'radiation', 'radio', 'sanctus', 'sano', 'saxum', 'script', 'sensus', 'spiritus', 'strontio', 'superbia', 'tabernus', 'telum', 'tempestas', 'tempus', 'tenebrae', 'terminus', 'terra', 'tincturem', 'tutamen', 'vacuos', 'venenum', 'vesania', 'victus', 'vinculum', 'vitium', 'vitreus', 'volatus']
+class_names = ['aequalitas', 'aer', 'alienis', 'aqua', 'arbor', 'astrum', 'auram', 'bestia', 'caelum', 'cognitio',
+               'coralos', 'corpus', 'desidia', 'dreadia', 'electrum', 'exanimis', 'exubitor', 'fabrico', 'fames',
+               'free_hex', 'gelum', 'gloria', 'granum', 'gula', 'herba', 'humanus', 'ignis', 'infernus', 'instrumentum',
+               'invidia', 'ira', 'iter', 'limus', 'lucrum', 'lux', 'luxuria', 'machina', 'magneto', 'matrix', 'messis',
+               'metallum', 'meto', 'mortuus', 'motus', 'mru', 'nebrisum', 'ordo', 'pannus', 'perditio', 'perfodio',
+               'permutatio', 'potentia', 'praecantatio', 'primordium', 'radiation', 'radio', 'sanctus', 'sano', 'saxum',
+               'script', 'sensus', 'spiritus', 'strontio', 'superbia', 'tabernus', 'telum', 'tempestas', 'tempus',
+               'tenebrae', 'terminus', 'terra', 'tincturem', 'tutamen', 'vacuos', 'venenum', 'vesania', 'victus',
+               'vinculum', 'vitium', 'vitreus', 'volatus']
 model = onnxruntime.InferenceSession(MODEL_ONNX_PATH)
 inputs = model.get_inputs()
 outputs = model.get_outputs()
 inputModelName = inputs[0].name
 outputModelName = outputs[0].name
+
 
 def preprocess(
         image: Image,

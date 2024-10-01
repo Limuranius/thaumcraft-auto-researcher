@@ -27,14 +27,11 @@ class Singleton(type):
 
 
 def createDirByFilePath(fullpath: str):
-    splittedPath = re.split('[\/]', fullpath)
-    if len(splittedPath) <= 1:
-        return
-    dirPath = os.path.join(*splittedPath[:-1])
-    if not os.path.exists(dirPath):
-        logging.info(f"Directory {dirPath} not exists. Creating...")
-        os.makedirs(dirPath)
-        logging.info(f"Directory {dirPath} successfully created")
+    dir_path = os.path.dirname(fullpath)
+    if not os.path.exists(dir_path):
+        logging.info(f"Directory {dir_path} not exists. Creating...")
+        os.makedirs(dir_path, exist_ok=True)
+        logging.info(f"Directory {dir_path} successfully created")
 
 
 def saveJSONConfig(fullpath: str, jsonToSave: dict):

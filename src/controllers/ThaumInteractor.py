@@ -8,7 +8,7 @@ from PyQt5.QtGui import QColor
 
 import src.UI.primitives.Circle
 import src.UI.primitives.Rect
-from logic.Neurolink import Neurolink
+from src.logic.Neurolink import Neurolink
 from src.controllers import Scenarios
 from src.controllers.Aspect import Aspect
 from src.controllers.Point import P

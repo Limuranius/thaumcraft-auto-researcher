@@ -14,6 +14,7 @@ BASE_DIR = join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
 SRC_DIR = join(BASE_DIR, "src")
 IMAGES_DIR = join(BASE_DIR, "images")
+MODELS_DIR = join(BASE_DIR, "models")
 ASPECTS_CONFIGS_DIR = join(BASE_DIR, "aspects_configs")
 USER_CONFIGS_DIR = join(SRC_DIR, "user_configs")
 
@@ -67,7 +68,7 @@ DELAY_BETWEEN_RENDER = 0.5  # seconds
 
 # ------------------------
 # Neurolink constants
-MODEL_ONNX_PATH = r"D:\Git Projects\thaumcraft-auto-researcher\tmp\weights.onnx"
+MODEL_ONNX_PATH = join(MODELS_DIR, "weights.onnx")
 FREE_HEXAGON_PREDICTION_NAME = "free_hex"
 SCRIPT_IMAGE_PREDICTION_NAME = "script"
 

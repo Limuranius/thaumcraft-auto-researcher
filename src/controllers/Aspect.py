@@ -4,7 +4,7 @@ from PIL import Image
 from PyQt5.QtGui import QPixmap
 
 from src.utils.constants import getAspectImagePath, UNKNOWN_ASPECT_IMAGE_PATH, EMPTY_ASPECT_SLOT_IMAGE_PATH
-from utils.utils import loadImage
+from src.utils.utils import loadImage
 
 
 emptyAspectInventorySlotImage = loadImage(EMPTY_ASPECT_SLOT_IMAGE_PATH)

@@ -8,7 +8,7 @@ from math import sin
 from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QColor
 
-from UI.primitives import Circle, Image
+from src.UI.primitives import Circle, Image
 from src.UI.OverlayUI import OverlayUI, KeyboardKeys
 from src.UI.primitives.Line import Line
 from src.UI.primitives.Point import Point

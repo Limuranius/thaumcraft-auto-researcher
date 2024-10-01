@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from PIL import Image
 
-from logic.onnx_inference import preprocess, predict, postprocess, class_names
+from src.logic.onnx_inference import preprocess, predict, postprocess, class_names
 
 
 @dataclass
