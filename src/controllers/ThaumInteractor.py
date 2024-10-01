@@ -16,8 +16,8 @@ from src.utils.constants import INVENTORY_SLOTS_X, INVENTORY_SLOTS_Y, THAUM_ASPE
     THAUM_ASPECTS_INVENTORY_SLOTS_Y, THAUM_CONTROLS_CONFIG_PATH, THAUM_ASPECTS_ORDER_CONFIG_PATH, \
     THAUM_HEXAGONS_SLOTS_COUNT, EMPTY_TOLERANCE_PERCENT, \
     THAUM_VERSION_CONFIG_PATH, DEBUG, \
-    ROBOFLOW_FREE_HEXAGON_PREDICTION_NAME, \
-    ROBOFLOW_SCRIPT_IMAGE_PREDICTION_NAME, DELAY_BETWEEN_RENDER
+    FREE_HEXAGON_PREDICTION_NAME, \
+    SCRIPT_IMAGE_PREDICTION_NAME, DELAY_BETWEEN_RENDER
 from src.utils.utils import getImagesDiffPercent, readJSONConfig, eventsDelay, renderDelay, \
     loadRecipesForSelectedVersion
 
@@ -97,7 +97,8 @@ class ThaumInteractor:
         self.rectInventoryLT = P(c['rectInventoryLT']['x'], c['rectInventoryLT']['y'])
         self.rectInventoryRB = P(c['rectInventoryRB']['x'], c['rectInventoryRB']['y'])
         self.rectHexagonsCC = P(c['rectHexagonsCC']['x'], c['rectHexagonsCC']['y'])
-        self.hexagonSlotSizeY = c['hexagonSlotSizeY']
+        self.hexagonSlotSizeY = (
+            c)['hexagonSlotSizeY']
         self.hexagonSlotSizeX = self.hexagonSlotSizeY * math.cos(math.pi / 6)
         self.increaseWorkingSlot()
 
@@ -154,7 +155,7 @@ class ThaumInteractor:
         if not DEBUG:
             return
         eventsDelay()
-        clickCircle = src.UI.primitives.Circle.Circle(point.x, point.y, 20, color=color)
+        clickCircle = src.UI.primitives.Circle(point.x, point.y, 20, color=color)
 
         timeToLeave = DELAY_BETWEEN_RENDER / 2 * 1000  # ms
         circleRadius = 20
@@ -303,10 +304,10 @@ class ThaumInteractor:
     def addDebugHighlightingRect(self, LTx=0, LTy=0, RTx=0, RTy=0):
         if not DEBUG:
             return None
-        debugHighlightingRect = src.UI.primitives.Rect.Rect(LTx, LTy,
-                                                            RTx, RTy,
-                                                            fill=QColor('blue'), fillOpacity=0.3, lineWidth=1,
-                                                            color=QColor('blue'))
+        debugHighlightingRect = src.UI.primitives.Rect(LTx, LTy,
+                                                       RTx, RTy,
+                                                       fill=QColor('blue'), fillOpacity=0.3, lineWidth=1,
+                                                       color=QColor('blue'))
         self.UI.addObject(debugHighlightingRect)
         return debugHighlightingRect
 
@@ -314,8 +315,8 @@ class ThaumInteractor:
         if DEBUG and debugHighlightingRect is not None:
             debugHighlightingRect.setVisibility(False)
         screenshotImage = pyautogui.screenshot(region=(
-            LTx, LTy,
-            RBx - LTx, RBy - LTy,
+            int(LTx), int(LTy),
+            int(RBx - LTx), int(RBy - LTy),
         ))
         logging.info(f"Taken screenshot on ({LTx}, {LTy})x({RBx}, {RBy})...")
         if DEBUG and debugHighlightingRect is not None:
@@ -469,9 +470,9 @@ class ThaumInteractor:
         allCells = set()
         maxDistFromCenter = 0
         for prediction in predictions:
-            if prediction.predictionName == ROBOFLOW_FREE_HEXAGON_PREDICTION_NAME:
+            if prediction.predictionName == FREE_HEXAGON_PREDICTION_NAME:
                 isAspect = False
-            elif prediction.predictionName == ROBOFLOW_SCRIPT_IMAGE_PREDICTION_NAME:
+            elif prediction.predictionName == SCRIPT_IMAGE_PREDICTION_NAME:
                 continue
             else:
                 isAspect = True
